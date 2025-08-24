@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "./api";
 
 const RecipeItems = () => {
   const [recipes, setRecipes] = useState([]);
@@ -9,7 +9,7 @@ const RecipeItems = () => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/recipes");
+        const res = await api.get("/recipes");
         setRecipes(res.data);
       } catch (error) {
         console.error("Error fetching recipes:", error);
@@ -19,7 +19,6 @@ const RecipeItems = () => {
     fetchRecipes();
   }, []);
 
-  // Filter recipes based on search term
   const filteredRecipes = recipes.filter(
     (recipe) =>
       recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

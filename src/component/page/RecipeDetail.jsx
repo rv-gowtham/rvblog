@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-
+import api from "./api";
 const RecipeDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -12,7 +11,7 @@ const RecipeDetail = () => {
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/recipes/${id}`);
+        const res = await api.get(`/recipes/${id}`);
         setRecipe(res.data);
       } catch (err) {
         console.error("Error fetching recipe:", err);
@@ -24,7 +23,7 @@ const RecipeDetail = () => {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this recipe?")) {
       try {
-        await axios.delete(`http://localhost:5000/recipes/${id}`);
+        await api.delete(`/recipes/${id}`);
         navigate("/recipes");
       } catch (e) {
         console.error("Failed to delete recipe:", e);
@@ -58,10 +57,7 @@ const RecipeDetail = () => {
         ingredients: editData.ingredients.split(",").map((i) => i.trim()),
         instructions: editData.instructions.split("\n").map((i) => i.trim()),
       };
-      const res = await axios.put(
-        `http://localhost:5000/recipes/${id}`,
-        updatedRecipe
-      );
+      const res = await api.put(`/recipes/${id}`, updatedRecipe);
       setRecipe(res.data);
       setEditing(false);
     } catch (err) {
@@ -77,6 +73,7 @@ const RecipeDetail = () => {
       <h2 className="my-3 display-4 fw-bold text-capitalize">{recipe.title}</h2>
       {editing && editData ? (
         <form onSubmit={handleUpdate}>
+          {/* --- Edit Form --- */}
           <div className="mb-3">
             <label className="form-label">Title</label>
             <input

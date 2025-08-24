@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "./api";
 
 const RecipeItems = () => {
   const [recipes, setRecipes] = useState([]);
@@ -9,7 +9,7 @@ const RecipeItems = () => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/recipes");
+        const res = await api.get("/recipes");
         setRecipes(res.data);
       } catch (error) {
         console.error("Error fetching recipes:", error);
@@ -27,49 +27,51 @@ const RecipeItems = () => {
   );
 
   return (
-    <div className="container" style={{ minHeight: "100vh" }}>
-      <div className="row justify-content-center mt-5 mb-4">
-        <div className="col-10 col-sm-8 col-md-6">
+    <>
+      <div style={{ minHeight: "90vh" }}>
+        {/* Search Box */}
+        <div className="text-center mt-5 mb-4">
           <input
             type="text"
             placeholder="Search recipes (e.g., veg, cake, sweet)..."
-            className="form-control"
+            className="form-control w-50 mx-auto"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-      </div>
-      <div className="row justify-content-center">
-        {filteredRecipes.length === 0 ? (
-          <div className="col-12 text-center mt-5">
-            <h5 className="text-muted">No recipes found for "{searchTerm}"</h5>
-          </div>
-        ) : (
-          filteredRecipes.map((recipe) => (
-            <div
-              className="col-11 col-sm-6 col-md-4 col-lg-3 mb-4"
-              key={recipe._id}
-            >
-              <div className="card h-100 shadow-sm p-3">
+
+        <div
+          className="row justify-content-center px-4"
+          style={{ padding: "40px 0" }}
+        >
+          {filteredRecipes.length === 0 ? (
+            <div className="text-center mt-5">
+              <h4 className="text-muted">
+                No recipes found for "{searchTerm}"
+              </h4>
+            </div>
+          ) : (
+            filteredRecipes.map((recipe) => (
+              <div
+                className="card col-10 col-sm-6 col-md-4 col-lg-3 m-2 p-3 shadow"
+                key={recipe._id}
+              >
                 <h5 className="fw-bold text-capitalize">{recipe.title}</h5>
-                <p className="text-muted mb-1">
-                  <strong>Category:</strong> {recipe.category}
-                </p>
-                <p className="text-muted mb-2">
+                <p className="text-muted">
                   {recipe.description?.substring(0, 60)}...
                 </p>
                 <Link
                   to={`/recipes/${recipe._id}`}
-                  className="btn btn-sm btn-outline-warning mt-auto"
+                  className="btn btn-sm btn-outline-warning"
                 >
                   View Recipe
                 </Link>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
